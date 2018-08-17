@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+<script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Nunito::latin', 'Roboto+Slab::latin', 'Lobster::latin', 'Poiret+One::latin', 'Bree+Serif::latin', 'Francois+One::latin', 'Amatic+SC::latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })(); </script>
+<script src="console.js" ></script>
+<script src="mouse.js" ></script>
+<script src="keyboardmap.js" ></script>
+<script src="assets.js" ></script>
+<script src="bitmap_render.js" ></script>
+<script src="gameboard.js" ></script>
+<script src="asset_loader.js" ></script>
+<script src="events.js" ></script>
+<script src="hud.js" ></script>
+<style>
+	canvas{
+		display:block;
+		margin:0 auto;
+		padding:0;
+	}
+	body{
+		margin:0;
+		padding:0;
+		background-color:lightblue;
+	}
+</style>
+</head><body><script>
+var board = new gameboard();
+var quadrant = new bitmap_render();
+board.doRefresh();
+/*for(i in board.assets.sort(function(a,b){
+	if(board.layerpriority[a.type]<board.layerpriority[b.type]){
+		return -1;
+	}
+	if(board.layerpriority[a.type]>board.layerpriority[b.type]){
+		return 1;
+	}
+	return 0;
+})){
+	console.log(board.assets[i].type+" "+board.layerpriority[board.assets[i].type]);
+}*/
+</script>
+
+<script src="perf_test.js" ></script>
+
+</body></html>
