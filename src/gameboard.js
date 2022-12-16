@@ -69,8 +69,8 @@
 		
 		this.inertia.run = function(){
 			console.log("scrolling inertially X="+mouse.speedX+" Y="+mouse.speedY);
-			parent.inertia.X=mouse.speedX;
-			parent.inertia.Y=mouse.speedY;
+			parent.inertia.X=mouse.speedX/5;
+			parent.inertia.Y=mouse.speedY/5;
 			var xarray = [];
 			var yarray = [];
 			var x=parent.inertia.X;
@@ -79,40 +79,15 @@
 			var oldy=0;
 			
 			//smooths out inertial scroll 
-			var zeromix=function(array){
-				var iszero=[];
-				var notzero=[];
-				for(var x=array.length-1;x>=0;x--){
-					if(array[x]===0){
-					iszero.unshift(array[x]);
-				  }else{
-					notzero.unshift(array[x]);
-				  }
-  
-				}
-
-				var outarray = [];
-
-				while(notzero.length){
-					if(iszero.length){
-					outarray.unshift(iszero.pop());
-				  }
-				  if(notzero.length){
-					outarray.unshift(notzero.pop())
-				  }
-				}
-				while(iszero.length){
-					outarray.push(iszero.pop());
-				}
-				for(var x=outarray.length-1;x>=0;x--){
-					if(outarray[x]===0){
-					outarray[x]=Math.floor(outarray[x-1]/2);
-					outarray[x-1]=Math.floor(outarray[x-1]/2);
-					x--;
-				  }
-				}
-				return outarray;
-			}
+			const zeromix = array => {
+				const iszero = array.filter(x => x === 0);
+				const notzero = array.filter(x => x !== 0);
+			  
+				const outarray = [...notzero, ...iszero];
+			  
+				return outarray.map((x, i) => (x === 0 ? Math.floor(outarray[i - 1] / 2) : x));
+			  };
+			  
 			i=0;
 
 			while(oldx!==x||oldy!==y){
@@ -126,7 +101,7 @@
 				x=Math.round(x/1.2);
 				y=Math.round(y/1.2);
 				i++;
-				if(i>100){
+				if(i>200){
 					break;
 				}
 			}
