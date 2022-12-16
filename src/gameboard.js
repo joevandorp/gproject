@@ -20,6 +20,8 @@
     			parent.refresh();
     		}
 		};
+		
+
 			
 		this.zoom.wheel=function(wheeldelta){
 			var zoomto = parent.zoom.value+(wheeldelta/3);
