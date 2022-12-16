@@ -1,4 +1,4 @@
-  var gameboard = function(id){
+  var gameboard = function(id){ 
   		var parent=this;
 		this.canvas = document.createElement("canvas");
 		this.canvas.id = id || "mycanvas" ; 
