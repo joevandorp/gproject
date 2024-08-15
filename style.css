@@ -1,0 +1,48 @@
+canvas{
+    display:block;
+    margin:0 auto;
+    padding:0;
+}
+body{
+    margin:0;
+    padding:0;
+    background-color:lightblue;
+}
+
+
+
+
+.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 0;
+    width: 100%;
+    background-color: transparent;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+}
+
+.overlay-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.overlay-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    width: 100px;
+    background-color: #555;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.overlay-button:hover {
+    background-color: #777;
+}
