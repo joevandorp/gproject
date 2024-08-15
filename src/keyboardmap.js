@@ -51,6 +51,17 @@ keys.k_keydown = function(){
 	
 }
 
+keys.f_keydown = function(){
+	//if zoomTestInterval is not defined, start the zoom test else clear the interval
+	if(typeof zoomTestInterval === 'undefined'){
+		startZoomTest();
+	}else{
+		clearInterval(zoomTestInterval);
+		zoomTestInterval = undefined;
+	}
+}
+
+
 
 keys.shift_keydown = keys.e_keydown = function(){
 	console.log("shifty");

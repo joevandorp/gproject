@@ -21,19 +21,11 @@
 <script src="src/asset_loader.js" ></script>
 <script src="src/events.js" ></script>
 <script src="src/hud.js" ></script>
-<style>
-	canvas{
-		display:block;
-		margin:0 auto;
-		padding:0;
-	}
-	body{
-		margin:0;
-		padding:0;
-		background-color:lightblue;
-	}
-</style>
-</head><body><script>
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</head><body>
+
+<script>
 var board = new gameboard();
 var quadrant = new bitmap_render();
 board.doRefresh();
@@ -51,5 +43,16 @@ board.doRefresh();
 </script>
 
 <script src="src/perf_test.js" ></script>
-
+<div class="overlay">
+	<div class="overlay-content">
+		<div class="overlay-button" id="overlay-button-1">
+			<p>Button 1</p>
+		</div>
+		<div class="overlay-button" id="overlay-button-2">
+			<p>Button 2</p>
+		</div>
+		<div class="overlay-button" id="overlay-button-3">
+			<p>Button 3</p>
+		</div>
+	</div>  
 </body></html>

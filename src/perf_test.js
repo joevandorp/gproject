@@ -65,3 +65,37 @@ perf_test=function(){};
 	perf_test();
 	setTimeout(function(){runtest=false;},4000);
 }());
+
+
+
+let zoomTestInterval;
+let startZoomTest = function(){};
+
+(function(){
+let zoomLevel = 1;
+let zoomIn = true;
+let intervalDuration = 20 * 10 / 18; // 20 seconds divided by 18 steps (9 steps in and 9 out)
+
+startZoomTest = function(){
+
+zoomTestInterval = setInterval(function() {
+    if (zoomIn) {
+        zoomLevel += 0.2;
+        if (zoomLevel >= 10) {
+            zoomIn = false;
+			clearInterval(zoomTestInterval);
+			zoomTestInterval=undefined;
+        }
+    } else {
+        zoomLevel -= 0.2;
+        if (zoomLevel <= 1) {
+            zoomIn = true;
+			clearInterval(zoomTestInterval);
+			zoomTestInterval=undefined;
+        }
+    }
+    board.zoom.to(zoomLevel);
+	console.log(zoomLevel + ' zoom level' );
+}, intervalDuration);
+}
+})();

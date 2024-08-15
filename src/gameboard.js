@@ -105,16 +105,16 @@
 			var oldy=0;
 			
 			//smooths out inertial scroll (not needed apparently)
-			// const zeromix = array => {
-			// 	const iszero = array.filter(x => x === 0);
-			// 	const notzero = array.filter(x => x !== 0);
+			const zeromix = array => {
+				const iszero = array.filter(x => x === 0);
+				const notzero = array.filter(x => x !== 0);
 			  
-			// 	const outarray = [...notzero, ...iszero];
+				const outarray = [...notzero, ...iszero];
 			  
-			// 	return outarray.map((x, i) => (x === 0 ? Math.floor(outarray[i - 1] / 2) : x));
-			//   };
+				return outarray.map((x, i) => (x === 0 ? Math.floor(outarray[i - 1] / 2) : x));
+			  };
 			  
-			// i=0;
+			i=0;
 
 			while(oldx!==x||oldy!==y){
 				x = x==oldx?0:x;
@@ -131,8 +131,8 @@
 					break;
 				}
 			}
-				//xarray = zeromix(xarray);
-				//yarray = zeromix(yarray);
+				xarray = zeromix(xarray);
+				yarray = zeromix(yarray);
 			clearInterval(parent.inertia.interval);
 			var countinterval=0;
 			
@@ -328,7 +328,7 @@
 							
 
 							
-					if(quadrant.chunktime==true){
+					if(false||quadrant.chunktime==true){
 					if(parent.quadrants[pngs[i].x+"|"+pngs[i].y]===undefined||parent.quadrants[pngs[i].x+"|"+pngs[i].y][quality]===undefined){
 						setTimeout(function(){
 							var img = new Image;
