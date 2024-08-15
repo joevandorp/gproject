@@ -7,8 +7,17 @@ var hud	= 	{
 					ln=ln||1;
 					var leading = ln!==1?this.leading*ln:0;
 					return this.line1offset+this.fontsize*ln+leading;
+				},
+				toggle_hud:function(){
+					if(board.display_hud){
+						board.display_hud=false;
+					}else{
+						board.display_hud=true;
+					}	
 				}
 			};
+
+
 
 window.addEventListener('load', function (){
 	

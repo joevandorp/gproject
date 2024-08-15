@@ -21,7 +21,9 @@
 <script src="src/asset_loader.js" ></script>
 <script src="src/events.js" ></script>
 <script src="src/hud.js" ></script>
+<script src="src/window.js" ></script>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="window.css">
 
 </head><body>
 
@@ -45,14 +47,14 @@ board.doRefresh();
 <script src="src/perf_test.js" ></script>
 <div class="overlay">
 	<div class="overlay-content">
-		<div class="overlay-button" id="overlay-button-1">
-			<p>Button 1</p>
+		<div class="overlay-button" onclick="hud.toggle_hud()"  id="overlay-button-1">
+			<p>Debug</p>
 		</div>
 		<div class="overlay-button" id="overlay-button-2">
-			<p>Button 2</p>
+			<p>Sidebar</p>
 		</div>
 		<div class="overlay-button" id="overlay-button-3">
-			<p>Button 3</p>
+			<p>Reset Scenerio</p>
 		</div>
 	</div>  
 </body></html>

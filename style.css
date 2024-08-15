@@ -15,12 +15,12 @@ body{
 .overlay {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: top;
     height: 0;
     width: 100%;
     background-color: transparent;
     position: fixed;
-    top: 0;
+    top: 10px;
     z-index: 1;
 }
 

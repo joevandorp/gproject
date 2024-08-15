@@ -6,7 +6,7 @@
 		this.context 				=	this.canvas.getContext('2d');
 		this.square				=	{height:4,width:2,margin:0};
 		this.zoom={value:1,height:parent.square.height,width:parent.square.width,margin:parent.square.margin};
-		this.zoom.to=function(multiplier){
+		this.zoom.to=function(multiplier,offset){
 			var n = Math.abs(multiplier);
 			var prevmouseX=mouse.boardX();
 			var prevmouseY=mouse.boardY();
@@ -15,12 +15,16 @@
     			parent.square.height=parent.zoom.height*n;
     			parent.square.width=parent.zoom.width*n;
     			parent.square.margin=parent.zoom.margin*n;
-    			parent.offsetX=parent.offsetX-((prevmouseX-mouse.boardX())*(board.square.width+board.square.margin));
-    			parent.offsetY=parent.offsetY-((prevmouseY-mouse.boardY())*(board.square.height+board.square.margin));
+				if(offset!==false){
+    				parent.offsetX=parent.offsetX-((prevmouseX-mouse.boardX())*(board.square.width+board.square.margin));
+    				parent.offsetY=parent.offsetY-((prevmouseY-mouse.boardY())*(board.square.height+board.square.margin));
+				}
     			parent.refresh();
     		}
 		};
 		
+		//toggle hud display
+		this.display_hud=false;
 
 			
 		this.zoom.wheel=function(wheeldelta){
@@ -386,7 +390,7 @@
 		  if(this.refresh_toggle){
 				this.context.fillStyle = keys.shift_state=='keydown'?'yellow':this.background;
 				this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
-				this.refreshBackground();
+				//this.refreshBackground();
 					for(var l in this.layerpriority){
 						for(var i in this.assets){
 							if(this.assets[i].type==this.layerpriority[l]){
@@ -422,10 +426,12 @@
 							}
 						}
 				  }
-				  for(var i in this.hud_elements){
-				  					this.context.fillStyle = 'black';
+				  if(this.display_hud){
+					for(var i in this.hud_elements){
+									this.context.fillStyle = 'black';
 									this.context.font=this.hud_elements[i].font||'24px Arial';
 									this.context.fillText(this.hud_elements[i].value(),this.hud_elements[i].x,this.hud_elements[i].y);
+					}
 				  }
 				  //if(this.framenumber%40){
 				  	//this.garbageCollection();

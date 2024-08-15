@@ -80,21 +80,21 @@ startZoomTest = function(){
 
 zoomTestInterval = setInterval(function() {
     if (zoomIn) {
-        zoomLevel += 0.2;
+        zoomLevel += 0.1;
         if (zoomLevel >= 10) {
             zoomIn = false;
 			clearInterval(zoomTestInterval);
 			zoomTestInterval=undefined;
         }
     } else {
-        zoomLevel -= 0.2;
+        zoomLevel -= 0.1;
         if (zoomLevel <= 1) {
             zoomIn = true;
 			clearInterval(zoomTestInterval);
 			zoomTestInterval=undefined;
         }
     }
-    board.zoom.to(zoomLevel);
+    board.zoom.to(zoomLevel, false);
 	console.log(zoomLevel + ' zoom level' );
 }, intervalDuration);
 }

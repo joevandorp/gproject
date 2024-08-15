@@ -1,0 +1,70 @@
+body{
+    overflow:hidden;
+
+
+    
+  }
+
+  .close-handle {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .window {
+    background-color: blue;
+    border: 2px solid blue;
+    width: 550px;
+    height: 400px;
+    position: absolute;
+    left: 133px;
+    top: 100px;
+    display: flex; /* Added this */
+    flex-direction: column; /* Added this */
+    box-sizing: border-box; /* Added this */
+    overflow: hidden;
+  }
+  
+  .header {
+    background-color: blue;
+    padding: 0px 2px 2px 2px;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+    font-family: sans-serif;
+    cursor: default;
+    flex-shrink: 0; /* Added this */
+  }
+  
+  .content {
+    background-color: white;
+    flex-grow: 1; /* Added this so it takes the remaining space */
+     /* You can keep this to ensure it takes full width */
+    padding:2px;
+    
+  }
+
+
+  
+  .resize-handle {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    cursor: nwse-resize; /* Diagonal resize cursor */
+    border-right: 10px solid rgba(0,0,0,0); /* Invisible area to capture the drag better */
+    border-bottom: 10px solid rgba(0,0,0,0);
+    z-index: 2;
+  }
+
+  .no-select {
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+  }
