@@ -17,7 +17,13 @@ var hud	= 	{
 				}
 			};
 
+			
+window.addEventListener('load', function (){
 
+	board.cameraToAsset(board.playertoken,'center');
+	startZoomTest();
+
+});
 
 window.addEventListener('load', function (){
 	

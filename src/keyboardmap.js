@@ -9,11 +9,14 @@ keys.list = {48:'0',49:'1',50:'2',51:'3',52:'4',53:'5',54:'6',55:'7',56:'8',57:'
 }());
 
 window.onkeydown = function(e){
-var code = e.keyCode||e.which;
-//document.getElementById("key").innerHTML="("+code+") "+keys.list[code];
-  if(typeof keys[keys.list[code]+'_keydown'] == 'function'){
-    keys[keys.list[code]+'_keydown']();
-  }
+
+	var code = e.keyCode||e.which;
+
+	//document.getElementById("key").innerHTML="("+code+") "+keys.list[code];
+
+	if(typeof keys[keys.list[code]+'_keydown'] == 'function'){
+		keys[keys.list[code]+'_keydown']();
+	}
   
   	keys[keys.list[code]+'_state']='keydown';
   
@@ -22,6 +25,7 @@ var code = e.keyCode||e.which;
     board.refresh();
     
     console.log("xpos:"+board.assets[board.playertoken].x+" ypos:"+board.assets[board.playertoken].y+" "+board.assets[board.playertoken].facing);
+
 }
 
 window.onkeyup = function(e){
@@ -54,6 +58,7 @@ keys.k_keydown = function(){
 keys.f_keydown = function(){
 	//if zoomTestInterval is not defined, start the zoom test else clear the interval
 	if(typeof zoomTestInterval === 'undefined'){
+		board.cameraToAsset(board.playertoken,'center');
 		startZoomTest();
 	}else{
 		clearInterval(zoomTestInterval);

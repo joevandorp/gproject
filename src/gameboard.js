@@ -4,7 +4,7 @@
 		this.canvas.id = id || "mycanvas" ; 
 		document.body.appendChild(this.canvas);
 		this.context 				=	this.canvas.getContext('2d');
-		this.square				=	{height:4,width:2,margin:0};
+		this.square				=	{height:4,width:4,margin:0};
 		this.zoom={value:1,height:parent.square.height,width:parent.square.width,margin:parent.square.margin};
 		this.zoom.to=function(multiplier,offset){
 			var n = Math.abs(multiplier);
@@ -415,7 +415,7 @@
 								}else if(this.assets[i].shape=='circle'){
 						
 									this.context.beginPath();
-									this.context.arc(xpos, ypos, this.assets[i].width/2, 0, 2 * Math.PI, false);
+									this.context.arc(xpos, ypos, this.assets[i].width/2*(this.zoom.value/10), 0, 2 * Math.PI, false);
 									this.context.fill();
 									this.context.lineWidth = 1;
 									this.context.strokeStyle = '#003300';

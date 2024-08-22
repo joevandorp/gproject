@@ -40,12 +40,23 @@
 		this.height=height||null;
 		this.facing=facing||'down';
 		this.camerafollow=true;
+
+		this.health = 5;
+
+		//check health every 1 second and remove asset if health is 0
+		this.healthInterval = setInterval(() => {
+			if (this.health <= 0) {
+				clearInterval(this.healthInterval);
+				this.remove();
+			}
+		});
 		
 			
 		this.animate=function(){
 			parent.lifetime = parent.lifetime+parent.refreshrate;
 			setTimeout(function(){parent.animate();},parent.refreshrate);
 		};
+
 		this.methods={};
 		
 		this.outofbounds=function(){
@@ -62,8 +73,8 @@
 			console.log(collidelog);
 		};
   		this.methods.moveX = function(x){
+				parent.facing=x<0?'left':'right';
 				if(!parent.methods.checkCollision(x,0)){
-					parent.facing=x<0?'left':'right';
 					parent.x=(parent.x)+(x);
 					var thequad=parent.quadrant.id();
 					console.log("quad "+thequad["x"]+"/"+thequad["y"]);
@@ -72,8 +83,8 @@
 				}
   		};
   		this.methods.moveY = function(y){
+				parent.facing=y<0?'up':'down';
   				if(!parent.methods.checkCollision(0,y)){
-  					parent.facing=y<0?'up':'down';
 					parent.y=(parent.y)+(y);
 					var thequad=parent.quadrant.id();
 					console.log("quad "+thequad["x"]+"/"+thequad["y"]);
@@ -81,6 +92,7 @@
 					console.log("qpos "+qpos["x"]+"/"+qpos["y"]);
 				}
   		};
+
   		this.methods.centerCamera = function(position,offsetX,offsetY){
 				position=position||'center';
 				offsetX=offsetX||0;
@@ -136,16 +148,21 @@
 			}
 				return false;
   		};
-  		this.methods.checkCollision = function(x,y){
-  		
+  		this.methods.checkCollision = function(x,y,absolute,callback){
+			console.log("check collision x="+x+" y="+y);
   			x=x||0;
   			y=y||0;
   		
   			var collide = 0;
   			var ontop = 0;
   			var collidelog = [];
-  			var posX = (parent.x)+(x);
-  			var posY = (parent.y)+(y);
+			if(absolute){
+				var posX = x;
+				var posY = y;
+			}else{
+				var posX = (parent.x)+(x);
+				var posY = (parent.y)+(y);
+			}
   			var squarewidth  = (board.square.width + board.square.margin);
   			var squareheight = (board.square.height + board.square.margin);
   			var pixelX = posX * squarewidth;
@@ -174,6 +191,10 @@
 						if(posX===board.assets[i].x&&posY===board.assets[i].y){
 							if(board.assets[i].solid==true && parent.solid==true){
 								collide++;
+								//if callback is defined and is a function, call it
+								if(typeof callback === 'function'){
+									callback(board.assets[i]);
+								}
 							}else{
 								ontop++;
 							}
@@ -188,6 +209,7 @@
   				for(var i in parent.onCollide){
   					parent.onCollide[i](collidelog);
   				}
+				console.log("collide");
   				return true;
   			}else{
   				if(ontop>0){
@@ -195,6 +217,7 @@
   						parent.onOver[i](collidelog);
   					}
   				}
+				console.log("no collide");
   				return false;
   				
   			}
@@ -210,19 +233,65 @@
   		this.fill='yellow';
   		this.type='player';
   		this.solid=true;
-  		this.methods.fireGun = function(){
-  			alert("gun fored");
+  		this.methods.fireGun = ()=>{
+  			board.assets.push(new bullet({direction:this.facing,x:this.x,y:this.y}));
   		}
   		
   	} 
   	
-  	var bullet = function(){
-  		asset.apply( this, arguments );
-  		this.width = 5;
-  		this.height = 5;
-  		this.usegrid = false;
-  		this.shape = 'circle';
-  	}
+	  var bullet = function({direction = 'up', distance = 10, x = 0, y = 0}={}) {
+		asset.apply(this, arguments);
+		this.x = x+0.5;
+		this.y = y+0.5;
+		this.solid = true;
+		this.width = 5;
+		this.height = 5;
+		this.usegrid = false;
+		this.shape = 'circle';
+		this.distance = distance;
+		this.direction = direction;
+		
+		
+		
+		
+		// Every 2 milliseconds, move bullet in the specified direction
+		this.distanceMoved = 0;
+		this.interval = setInterval(() => {  // Use arrow function to keep the correct `this` context
+			switch(this.direction) {
+				case 'up':
+					this.y = this.y - 0.1;
+					break;
+				case 'down':
+					this.y = this.y + 0.1;
+					break;
+				case 'left':
+					this.x = this.x - 0.1;
+					break;
+				case 'right':
+					this.x = this.x + 0.1;
+					break;
+			}
+			//when the distance moved float val passes into the next whole number, check for collision
+			if (this.distanceMoved > 1 && this.distanceMoved % 1 < 0.1){
+				if(this.methods.checkCollision(Math.floor(this.x), Math.floor(this.y),true, (collidedAsset => {
+					collidedAsset.health -= 1;
+				}))){
+					console.log(this.x, this.y, "hit something");
+					clearInterval(this.interval);
+					this.remove();  // Ensure `remove` method is defined elsewhere in your code
+				}
+			}
+			this.distanceMoved += 0.1;
+			if(this.distanceMoved >= this.distance-1) {
+				this.shape = 'none';
+			}
+			if(this.distanceMoved >= this.distance) {
+				clearInterval(this.interval);
+				this.remove();  // Ensure `remove` method is defined elsewhere in your code
+			}
+		}, 2);
+	};
+	
 
   	var hud_text = function(value,x,y){
   		asset.apply( this, arguments );
