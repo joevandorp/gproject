@@ -6,6 +6,9 @@
 		this.context 				=	this.canvas.getContext('2d');
 		this.square				=	{height:4,width:4,margin:0};
 		this.zoom={value:1,height:parent.square.height,width:parent.square.width,margin:parent.square.margin};
+		this.mousehighlightx=0;
+		this.mousehighlighty=0;
+		this.displayMouseHighlight=true;
 		this.zoom.to=function(multiplier,offset){
 			var n = Math.abs(multiplier);
 			var prevmouseX=mouse.boardX();
@@ -22,6 +25,11 @@
     			parent.refresh();
     		}
 		};
+
+		//standard graphics
+		this.images={};
+		this.images.wall = new Image();
+		this.images.wall.src = 'src/pngs/wall.png';
 		
 		//toggle hud display
 		this.display_hud=false;
@@ -394,23 +402,42 @@
 					for(var l in this.layerpriority){
 						for(var i in this.assets){
 							if(this.assets[i].type==this.layerpriority[l]){
-									if(mouse.gridX()==this.assets[i].x&&mouse.gridY()==this.assets[i].y){
-										this.context.fillStyle = 'lightgreen';
-									}else if(	mouse.gridX()<=this.assets[i].x+1 && 
-												mouse.gridY()<=this.assets[i].y+1 &&
-												mouse.gridX()>=this.assets[i].x-1 && 
-												mouse.gridY()>=this.assets[i].y-1 
-									){
-										this.context.fillStyle = 'white';
-									}else{
-										this.context.fillStyle = this.assets[i].fill;
-									}
+									let imagefill = false;
+									// this creates the egg effect for mouse over
+									// if(mouse.gridX()==this.assets[i].x&&mouse.gridY()==this.assets[i].y){
+									// 	this.context.fillStyle = 'lightgreen';
+									// }else if(	mouse.gridX()<=this.assets[i].x+1 && 
+									// 			mouse.gridY()<=this.assets[i].y+1 &&
+									// 			mouse.gridX()>=this.assets[i].x-1 && 
+									// 			mouse.gridY()>=this.assets[i].y-1 
+									// ){
+									//	this.context.fillStyle = 'white';
+									// }else{
+										//if the fill is a string that begins with "image:" and the rest of the string is a valid image object key aka board.images[restofstring] then set this.imagefill to the image object else set it to false and set the fill to the asset fill
+										//if there is no asset fill then set the fill to black
+										if(this.assets[i].fill!==undefined){
+											if(this.assets[i].fill.substring(0,6)=='image:'){
+												//use the rest of the string as the key to the image object
+												let imagekey = this.assets[i].fill.substring(6);
+												if(imagekey in this.images){
+													imagefill = this.images[imagekey];
+												}
+											}
+										}
+									 	this.context.fillStyle = this.assets[i].fill||'black';
+									// }
 									var xpos = this.assets[i].x * (this.square.width+this.square.margin) + this.assets[i].innerx + board.offsetX;
 									var ypos = this.assets[i].y * (this.square.height+this.square.margin) + this.assets[i].innery + board.offsetY;
 							
 								if(this.assets[i].shape=='gamerect'){
-						
-									this.context.fillRect(xpos,ypos,this.square.width*1.01,this.square.height*1.01);
+
+									//if the imagefill is set  and is an image object then draw the image else draw a rectangle
+									if(imagefill!==false && typeof imagefill === 'object'){
+										this.context.drawImage(imagefill, xpos, ypos,this.square.width*1.01,this.square.height*1.01);
+									}else{
+										this.context.fillRect(xpos, ypos, this.square.width*1.01, this.square.height*1.01);
+									}
+									
 							
 								}else if(this.assets[i].shape=='circle'){
 						
@@ -426,6 +453,18 @@
 							}
 						}
 				  }
+				  //place highlight rectangle where mouse is
+				if(this.displayMouseHighlight){
+					this.context.strokeStyle = 'yellow'; // Set the outline color to red
+					this.context.lineWidth = 3; // Set the thickness of the outline
+					if(!contextMenuIsOpen){
+						mousehighlightx = mouse.gridX() * (this.square.width+this.square.margin) + this.assets[i].innerx + board.offsetX;
+						mousehighlighty = mouse.gridY() * (this.square.height+this.square.margin) + this.assets[i].innery + board.offsetY;
+					}
+					this.context.strokeRect(mousehighlightx,mousehighlighty,this.square.width*1.01,this.square.height*1.01);
+				}
+				  
+
 				  if(this.display_hud){
 					for(var i in this.hud_elements){
 									this.context.fillStyle = 'black';
@@ -448,7 +487,7 @@
 			this.clocktime=this.clocktime+this.clockincrement;
 				
 			if(this.clock_toggle===true){
-				setTimeout(function(){board.doRefresh();},this.clockincrement);
+				setTimeout(function(){requestAnimationFrame(board.doRefresh());},this.clockincrement);
 			}
 
 		}

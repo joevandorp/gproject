@@ -30,7 +30,7 @@
 		this.created=Date.now();
 		this.lifetime=function(){return Date.now()-parent.created;};
 		this.refreshrate=300;
-		this.fill=fill||'#000';
+		this.fill=fill||'image:wall';
 		this.type='basic';
 		this.usegrid=true;
 		this.solid=true;
@@ -291,7 +291,11 @@
 			}
 		}, 2);
 	};
-	
+
+	var wall = function(x,y){
+		asset.apply( this, arguments );
+		this.fill='image:wall';
+	}
 
   	var hud_text = function(value,x,y){
   		asset.apply( this, arguments );

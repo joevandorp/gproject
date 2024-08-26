@@ -13,10 +13,20 @@ const menuItems = [
     }}
 ];
 
+let contextMenuIsOpen = false;
+
 // Function to create the custom menu
 function createCustomMenu(items) {
+    //remove any existing custom menus
+    const existingMenu = document.querySelector(".custom-menu");
+    if (existingMenu) {
+        existingMenu.remove();
+    }
+
+    // Create the custom menu
     const customMenu = document.createElement("ul");
     customMenu.classList.add("custom-menu");
+    contextMenuIsOpen = true;
 
     items.forEach(item => {
         const menuItem = document.createElement("li");
@@ -35,7 +45,7 @@ document.addEventListener("contextmenu", function (event, items) {
     items = items || menuItems;
     event.preventDefault();
     createCustomMenu(items);
-
+    board.mouse.action = 'none';
     const customMenu = document.querySelector(".custom-menu");
     if (customMenu) {
         customMenu.style.top = event.pageY + "px";
@@ -46,6 +56,12 @@ document.addEventListener("contextmenu", function (event, items) {
         document.addEventListener("click", function() {
             customMenu.style.display = "none";
             customMenu.remove();
+            board.displayMouseHighlight = false;
+            contextMenuIsOpen = false;
+            board.mouse.action = 'dragboard';
+            setTimeout(() => {
+                board.displayMouseHighlight = true;
+            }, 300);
         }, { once: true }); // Use { once: true } to ensure the event listener is removed after one use
     }
 });
