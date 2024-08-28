@@ -252,7 +252,12 @@
 				if(!parent.mouse.down){
 					return;
 				}
-				parent.assets.push(new asset(mouse.gridX(),mouse.gridY()));
+				const gridX = mouse.gridX();
+				const gridY = mouse.gridY();
+				const existingAsset = parent.assets.find(asset => asset.x === gridX && asset.y === gridY);
+				if (!existingAsset) {
+					parent.assets.push(new asset(gridX, gridY));
+				}
 				//  console.log("x="+x+" y="+y);
 			}
 		}
