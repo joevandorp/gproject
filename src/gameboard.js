@@ -122,101 +122,35 @@
 			}
 		};
 		
-		this.inertia.run = function(){
-			//if mouse speed is infinity then default to max speed same for negative infinity 20 is a good speed
-			//check for negative infinity first
-			const maxmouseSpeed = 100;
-			if (mouse.speedX === -Infinity) {
-				mouse.speedX = -maxmouseSpeed;
-			}
-			if (mouse.speedY === -Infinity) {
-				mouse.speedY = -maxmouseSpeed;
-			}
-			if (mouse.speedX === Infinity) {
-				mouse.speedX = maxmouseSpeed;
-			}
-			if (mouse.speedY === Infinity) {
-				mouse.speedY = maxmouseSpeed;
-			}
-			if (isNaN(mouse.speedX)) {
-				mouse.speedX = 0;
-			}
-			if (isNaN(mouse.speedY)) {
-				mouse.speedY = 0;
-			}
+		this.inertia.run = function() {
+			const maxSpeed = 1000;
+			const deceleration = 1.2;
+			const framesPerSecond = 60;
 
-			//console.log("scrolling inertially X="+mouse.speedX+" Y="+mouse.speedY);
-			console.log("scrolling inertially X="+mouse.speedX+" Y="+mouse.speedY);
+			// Clamp and sanitize speed values
+			mouse.speedX = Math.min(Math.max(isFinite(mouse.speedX) ? mouse.speedX : 0, -maxSpeed), maxSpeed);
+			mouse.speedY = Math.min(Math.max(isFinite(mouse.speedY) ? mouse.speedY : 0, -maxSpeed), maxSpeed);
 
-			parent.inertia.X=mouse.speedX/5;
-			parent.inertia.Y=mouse.speedY/5;
-			var xarray = [];
-			var yarray = [];
-			var x=parent.inertia.X;
-			var y=parent.inertia.Y;
-			var oldx=0;
-			var oldy=0;
-			
-			//smooths out inertial scroll (not needed apparently)
-			const zeromix = array => {
-				const iszero = array.filter(x => x === 0);
-				const notzero = array.filter(x => x !== 0);
-			  
-				const outarray = [...notzero, ...iszero];
-			  
-				return outarray.map((x, i) => (x === 0 ? Math.floor(outarray[i - 1] / 2) : x));
-			  };
-			  
-			i=0;
+			console.log(`Scrolling inertially X=${mouse.speedX} Y=${mouse.speedY}`);
 
-			while(oldx!==x||oldy!==y){
-				x = x==oldx?0:x;
-				y = y==oldy?0:y;
-				oldx=x;
-				oldy=y;
-				console.log('x is '+x+' and y is '+y);
-				xarray.push(x);
-				yarray.push(y);
-				x=Math.round(x/1.2);
-				y=Math.round(y/1.2);
-				i++;
-				if(i>200){
-					break;
-				}
-			}
-				xarray = zeromix(xarray);
-				yarray = zeromix(yarray);
+			let currentSpeedX = mouse.speedX / 5;
+			let currentSpeedY = mouse.speedY / 5;
+
 			clearInterval(parent.inertia.interval);
-			var countinterval=0;
-			
-			parent.inertia.interval = setInterval(function(){
-				
-				var corrected_x=0;
-				var xydividend=(xarray[0]/yarray[0])-(xarray[countinterval]/yarray[countinterval]);
-				
-				if(xydividend>1.2||xydividend<(-1.2)){
-					corrected_x=Math.floor((xarray[0]/yarray[0])*yarray[countinterval]);
-				}else{
-					corrected_x=xarray[countinterval];
-				}
-				
-				console.log("X="+corrected_x+"Y="+yarray[countinterval]+' x/y= '+xydividend);
-					
-					if(!isNaN(xarray[countinterval])){
-						parent.offsetX=parent.offsetX+corrected_x;
-					}
-					
-					if(!isNaN(yarray[countinterval])){
-						parent.offsetY=parent.offsetY+yarray[countinterval];
-					}
 
-				countinterval++;
-				if((countinterval)>=xarray.length){
+			parent.inertia.interval = setInterval(function() {
+				if (Math.abs(currentSpeedX) < 0.1 && Math.abs(currentSpeedY) < 0.1) {
 					clearInterval(parent.inertia.interval);
-					//break;
-					console.log("interval done");
+					console.log("Inertial scrolling finished");
+					return;
 				}
-			},parent.clockincrement-1);
+
+				parent.offsetX += currentSpeedX;
+				parent.offsetY += currentSpeedY;
+
+				currentSpeedX /= deceleration;
+				currentSpeedY /= deceleration;
+			}, 1000 / framesPerSecond);
 		}
 		
 		this.onscreen_quadrants=function(){
