@@ -61,7 +61,7 @@ window.addEventListener('load', function (){
 window.addEventListener('load', function (){
 	
 	board.hud_elements.push(new hud_text(function(){
-		return 'asset count = ' + board.hud_elements.length;
+		return 'asset count = ' + board.assets.length;
 	},5,hud.line(5)));
 	
 });

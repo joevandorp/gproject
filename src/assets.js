@@ -38,10 +38,15 @@
 		this.rotation=rotation||0;
 		this.width=width||null;
 		this.height=height||null;
+		this.oldFacing=facing||'down';
 		this.facing=facing||'down';
 		this.camerafollow=true;
-
+		this.moving=false;
 		this.health = 5;
+
+
+
+
 
 		//check health every 1 second and remove asset if health is 0
 		this.healthInterval = setInterval(() => {
@@ -58,6 +63,14 @@
 		};
 
 		this.methods={};
+
+		this.methods.changeDirection = (direction) => {
+			if (this.moving===false && (direction === 'up' || direction === 'down' || direction === 'left' || direction === 'right')) {
+				this.oldFacing = this.facing;
+				this.facing = direction;
+				
+			}
+		}
 		
 		this.outofbounds=function(){
 			console.log("wall hit");
@@ -72,26 +85,120 @@
 			console.log("over! noBANGer!");
 			console.log(collidelog);
 		};
-  		this.methods.moveX = function(x){
-				parent.facing=x<0?'left':'right';
-				if(!parent.methods.checkCollision(x,0)){
-					parent.x=(parent.x)+(x);
-					var thequad=parent.quadrant.id();
-					console.log("quad "+thequad["x"]+"/"+thequad["y"]);
-					var qpos=parent.quadrant.position();
-					console.log("qpos "+qpos["x"]+"/"+qpos["y"]);
+  		
+
+
+  		
+		this.methods.moveX = function(x){
+			const nextMove = function(){
+				// if up down left or right is pressed, move in that direction
+				if (board.keyState.up || board.keyState.down || board.keyState.left || board.keyState.right) {
+					parent.methods.move();
 				}
-  		};
-  		this.methods.moveY = function(y){
-				parent.facing=y<0?'up':'down';
-  				if(!parent.methods.checkCollision(0,y)){
-					parent.y=(parent.y)+(y);
-					var thequad=parent.quadrant.id();
-					console.log("quad "+thequad["x"]+"/"+thequad["y"]);
-					var qpos=parent.quadrant.position();
-					console.log("qpos "+qpos["x"]+"/"+qpos["y"]);
+			}
+
+			// if x is negative make the animationMoveFloat negative, otherwise positive
+			let animationMoveFloat = 0.02;
+			animationMoveFloat = x < 0 ? -animationMoveFloat : animationMoveFloat;
+
+			x < 0 ? parent.methods.changeDirection('left') : parent.methods.changeDirection('right');
+
+			firstMovementInDirection = parent.oldFacing !== parent.facing;
+			parent.oldFacing = parent.facing;
+			if(firstMovementInDirection){
+				console.log("first movement in direction");
+				parent.fill = `image:${parent.facing}facing`;
+				parent.x = Math.round(parent.x);
+				
+				setTimeout(nextMove, 200);
+			}else if (parent.moving === false && !parent.methods.checkCollision(x, 0)) {
+				console.log("derp derp");
+				// if we are moving, set moving to true
+				parent.moving = true;
+				originalX = parent.x;
+				// interval that adds the animationMoveFloat to the x value every 2 milliseconds until the distance is reached or greater than (parent.x) + (x) if x is positive or less than (parent.x) + (x) if x is negative
+				const interval = setInterval(() => {
+					// get sign of x
+
+
+					const sign = Math.sign(x);
+
+					// parent.moving = false;
+					// clearInterval(interval)
+					
+					if (sign === -1 && parent.x > (originalX + x)) {
+						parent.x += animationMoveFloat;
+					} else if (sign === 1 && parent.x < (originalX + x)) {
+						parent.x += animationMoveFloat;
+					} else {
+						clearInterval(interval);
+						parent.x = Math.round(parent.x);
+						parent.moving = false;
+						nextMove();
+					}
+					parent.methods.centerCamera();
+				}, 2);
+			}
+		};
+
+		this.methods.moveY = function(y){
+			const nextMove = function(){
+				// if up down left or right is pressed, move in that direction
+				if (board.keyState.up || board.keyState.down || board.keyState.left || board.keyState.right) {
+					parent.methods.move();
 				}
-  		};
+			}
+
+			// if y is negative make the animationMoveFloat negative, otherwise positive
+			let animationMoveFloat = 0.02;
+			animationMoveFloat = y < 0 ? -animationMoveFloat : animationMoveFloat;
+
+			y < 0 ? parent.methods.changeDirection('up') : parent.methods.changeDirection('down');
+			
+			firstMovementInDirection = parent.oldFacing !== parent.facing;
+			parent.oldFacing = parent.facing;
+			
+			if(firstMovementInDirection){
+				console.log("first movement in direction");
+				
+				parent.y = Math.round(parent.y);
+				parent.fill = `image:${parent.facing}facing`;
+				setTimeout(nextMove, 200);
+			}else if (parent.moving === false && !parent.methods.checkCollision(0, y)) {
+				console.log("derp derp");
+				// if we are moving, set moving to true
+				parent.moving = true;
+				originalY = parent.y;
+				// interval that adds the animationMoveFloat to the y value every 2 milliseconds until the distance is reached or greater than (parent.y) + (y) if y is positive or less than (parent.y) + (y) if y is negative
+				const interval = setInterval(() => {
+					// get sign of y
+					const sign = Math.sign(y);
+
+					// parent.moving = false;
+					// clearInterval(interval)
+					
+					if (sign === -1 && parent.y > (originalY + y)) {
+						parent.y += animationMoveFloat;
+					} else if (sign === 1 && parent.y < (originalY + y)) {
+						parent.y += animationMoveFloat;
+					} else {
+						clearInterval(interval);
+						parent.y = Math.round(parent.y);
+						parent.moving = false;
+						nextMove();
+					}
+					parent.methods.centerCamera();
+				}, 2);
+			}
+		};
+
+		this.methods.move = function(){
+			board.keyState.up ? parent.methods.moveY(-1) : null;
+			board.keyState.down ? parent.methods.moveY(1) : null;
+			board.keyState.left ? parent.methods.moveX(-1) : null;
+			board.keyState.right ? parent.methods.moveX(1) : null;
+			
+		};
 
   		this.methods.centerCamera = function(position,offsetX,offsetY){
 				position=position||'center';
@@ -236,6 +343,17 @@
   		this.methods.fireGun = ()=>{
   			board.assets.push(new bullet({direction:this.facing,x:this.x,y:this.y}));
   		}
+		this.fill='image:downfacing';
+
+		this.walkCycle = setInterval(() => {
+			if(this.moving && this.fill != `image:${this.facing}facingwalk1`) {
+				this.fill = `image:${this.facing}facingwalk1`;
+			}else if (this.moving) {
+				this.fill = `image:${this.facing}facingwalk2`;
+			}else{
+				this.fill = `image:${this.facing}facing`;
+			}
+		}, 200);
   		
   	} 
   	

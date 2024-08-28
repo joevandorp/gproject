@@ -3,7 +3,7 @@
 		this.canvas = document.createElement("canvas");
 		this.canvas.id = id || "mycanvas" ; 
 		document.body.appendChild(this.canvas);
-		this.context 				=	this.canvas.getContext('2d');
+		this.context 			=	this.canvas.getContext('2d');
 		this.square				=	{height:4,width:4,margin:0};
 		this.zoom={value:1,height:parent.square.height,width:parent.square.width,margin:parent.square.margin};
 		this.mousehighlightx=0;
@@ -30,7 +30,43 @@
 		this.images={};
 		this.images.wall = new Image();
 		this.images.wall.src = 'src/pngs/wall.png';
-		
+
+		this.images.upfacing = new Image();
+		this.images.upfacing.src = 'src/pngs/upfacing.png';
+
+		this.images.downfacing = new Image();
+		this.images.downfacing.src = 'src/pngs/downfacing.png';
+
+		this.images.leftfacing = new Image();
+		this.images.leftfacing.src = 'src/pngs/leftfacing.png';
+
+		this.images.rightfacing = new Image();
+		this.images.rightfacing.src = 'src/pngs/rightfacing.png';
+
+		this.images.rightfacingwalk1 = new Image();
+		this.images.rightfacingwalk1.src = 'src/pngs/rightfacingwalk1.png';
+
+		this.images.rightfacingwalk2 = new Image();
+		this.images.rightfacingwalk2.src = 'src/pngs/rightfacingwalk2.png';	
+
+		this.images.upfacingwalk1 = new Image();
+		this.images.upfacingwalk1.src = 'src/pngs/upfacingwalk1.png';
+
+		this.images.upfacingwalk2 = new Image();
+		this.images.upfacingwalk2.src = 'src/pngs/upfacingwalk2.png';
+
+		this.images.downfacingwalk1 = new Image();
+		this.images.downfacingwalk1.src = 'src/pngs/downfacingwalk1.png';
+
+		this.images.downfacingwalk2 = new Image();
+		this.images.downfacingwalk2.src = 'src/pngs/downfacingwalk2.png';
+
+		this.images.leftfacingwalk1 = new Image();
+		this.images.leftfacingwalk1.src = 'src/pngs/leftfacingwalk1.png';
+	
+		this.images.leftfacingwalk2 = new Image();
+		this.images.leftfacingwalk2.src = 'src/pngs/leftfacingwalk2.png';
+
 		//toggle hud display
 		this.display_hud=false;
 
@@ -64,7 +100,12 @@
 		this.inertia.active=false;	
 		this.inertia.X=0;
 		this.inertia.Y=0;	
-		
+		this.keyState={
+			up: false,
+			down: false,
+			left: false,
+			right: false
+		};
 			
 			
 		this.garbageCollection=function(){
@@ -290,7 +331,7 @@
 		
 		this.framenumber=0;
 
-		this.clockincrement=30;
+		this.clockincrement=10;
 
 		this.clock_toggle=true;
 		
@@ -487,8 +528,10 @@
 			this.clocktime=this.clocktime+this.clockincrement;
 				
 			if(this.clock_toggle===true){
-				setTimeout(function(){requestAnimationFrame(board.doRefresh());},this.clockincrement);
+				setTimeout(function(){board.doRefresh();},this.clockincrement);
 			}
+
+			return true;
 
 		}
 
