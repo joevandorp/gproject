@@ -26,46 +26,83 @@
     		}
 		};
 
+		this.checkPlayerSprites = function(playerStyle) {
+			const baseUrl = `src/sprites/player/${playerStyle}/`;
+			const directions = ['down', 'up', 'left', 'right'];
+			const results = {};
+
+			const checkImage = (url) => {
+				return new Promise((resolve) => {
+					const img = new Image();
+					img.onload = () => resolve(true);
+					img.onerror = () => {
+						// Silently handle the error without logging
+						resolve(false);
+					};
+					img.src = url;
+				});
+			};
+
+			const checkWalkAnimations = async (direction) => {
+				let walkCount = 0;
+				while (await checkImage(`${baseUrl}${direction}facingwalk${walkCount + 1}.png`)) {
+					walkCount++;
+				}
+				return walkCount;
+			};
+
+			const checkAllDirections = async () => {
+				if (await checkImage(`${baseUrl}downfacing.png`)) {
+					const downWalkCount = await checkWalkAnimations('down');
+					
+					for (const direction of directions) {
+						results[direction] = {
+							facing: `${baseUrl}${direction}facing.png`,
+							walk: []
+						};
+						
+						for (let i = 1; i <= downWalkCount; i++) {
+							results[direction].walk.push(`${baseUrl}${direction}facingwalk${i}.png`);
+						}
+					}
+
+					return results;
+				} else {
+					// Silently handle the case when no sprites are found
+					return null;
+				}
+			};
+
+			return checkAllDirections();
+		};
+
+		this.loadPlayerSprites = async function(playerStyle) {
+			const spriteData = await this.checkPlayerSprites(playerStyle);
+			
+			if (spriteData) {
+				this.images = this.images || {};
+				
+				for (const [direction, sprites] of Object.entries(spriteData)) {
+					this.images[`${direction}facing`] = new Image();
+					this.images[`${direction}facing`].src = sprites.facing;
+
+					sprites.walk.forEach((walkSprite, index) => {
+						this.images[`${direction}facingwalk${index + 1}`] = new Image();
+						this.images[`${direction}facingwalk${index + 1}`].src = walkSprite;
+					});
+				}
+
+				// Silently handle successful sprite loading
+			}
+		};
+
+		// Usage example
+		this.loadPlayerSprites('default');
+
 		//standard graphics
-		this.images={};
+		this.images = this.images || {};
 		this.images.wall = new Image();
-		this.images.wall.src = 'src/sprites/wall/wall.png';
-
-		this.images.upfacing = new Image();
-		this.images.upfacing.src = 'src/sprites/default/upfacing.png';
-
-		this.images.downfacing = new Image();
-		this.images.downfacing.src = 'src/sprites/default/downfacing.png';
-
-		this.images.leftfacing = new Image();
-		this.images.leftfacing.src = 'src/sprites/default/leftfacing.png';
-
-		this.images.rightfacing = new Image();
-		this.images.rightfacing.src = 'src/sprites/default/rightfacing.png';
-
-		this.images.rightfacingwalk1 = new Image();
-		this.images.rightfacingwalk1.src = 'src/sprites/default/rightfacingwalk1.png';
-
-		this.images.rightfacingwalk2 = new Image();
-		this.images.rightfacingwalk2.src = 'src/sprites/default/rightfacingwalk2.png';	
-
-		this.images.upfacingwalk1 = new Image();
-		this.images.upfacingwalk1.src = 'src/sprites/default/upfacingwalk1.png';
-
-		this.images.upfacingwalk2 = new Image();
-		this.images.upfacingwalk2.src = 'src/sprites/default/upfacingwalk2.png';
-
-		this.images.downfacingwalk1 = new Image();
-		this.images.downfacingwalk1.src = 'src/sprites/default/downfacingwalk1.png';
-
-		this.images.downfacingwalk2 = new Image();
-		this.images.downfacingwalk2.src = 'src/sprites/default/downfacingwalk2.png';
-
-		this.images.leftfacingwalk1 = new Image();
-		this.images.leftfacingwalk1.src = 'src/sprites/default/leftfacingwalk1.png';
-	
-		this.images.leftfacingwalk2 = new Image();
-		this.images.leftfacingwalk2.src = 'src/sprites/default/leftfacingwalk2.png';
+		this.images.wall.src = 'src/sprites/environment/wall/wall.png';
 
 		//toggle hud display
 		this.display_hud=false;
@@ -123,7 +160,7 @@
 		};
 		
 		this.inertia.run = function() {
-			const maxSpeed = 1000;
+			const maxSpeed = 100;
 			const deceleration = 1.2;
 			const framesPerSecond = 60;
 
