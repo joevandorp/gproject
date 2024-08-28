@@ -29,43 +29,43 @@
 		//standard graphics
 		this.images={};
 		this.images.wall = new Image();
-		this.images.wall.src = 'src/pngs/wall.png';
+		this.images.wall.src = 'src/sprites/wall/wall.png';
 
 		this.images.upfacing = new Image();
-		this.images.upfacing.src = 'src/pngs/upfacing.png';
+		this.images.upfacing.src = 'src/sprites/default/upfacing.png';
 
 		this.images.downfacing = new Image();
-		this.images.downfacing.src = 'src/pngs/downfacing.png';
+		this.images.downfacing.src = 'src/sprites/default/downfacing.png';
 
 		this.images.leftfacing = new Image();
-		this.images.leftfacing.src = 'src/pngs/leftfacing.png';
+		this.images.leftfacing.src = 'src/sprites/default/leftfacing.png';
 
 		this.images.rightfacing = new Image();
-		this.images.rightfacing.src = 'src/pngs/rightfacing.png';
+		this.images.rightfacing.src = 'src/sprites/default/rightfacing.png';
 
 		this.images.rightfacingwalk1 = new Image();
-		this.images.rightfacingwalk1.src = 'src/pngs/rightfacingwalk1.png';
+		this.images.rightfacingwalk1.src = 'src/sprites/default/rightfacingwalk1.png';
 
 		this.images.rightfacingwalk2 = new Image();
-		this.images.rightfacingwalk2.src = 'src/pngs/rightfacingwalk2.png';	
+		this.images.rightfacingwalk2.src = 'src/sprites/default/rightfacingwalk2.png';	
 
 		this.images.upfacingwalk1 = new Image();
-		this.images.upfacingwalk1.src = 'src/pngs/upfacingwalk1.png';
+		this.images.upfacingwalk1.src = 'src/sprites/default/upfacingwalk1.png';
 
 		this.images.upfacingwalk2 = new Image();
-		this.images.upfacingwalk2.src = 'src/pngs/upfacingwalk2.png';
+		this.images.upfacingwalk2.src = 'src/sprites/default/upfacingwalk2.png';
 
 		this.images.downfacingwalk1 = new Image();
-		this.images.downfacingwalk1.src = 'src/pngs/downfacingwalk1.png';
+		this.images.downfacingwalk1.src = 'src/sprites/default/downfacingwalk1.png';
 
 		this.images.downfacingwalk2 = new Image();
-		this.images.downfacingwalk2.src = 'src/pngs/downfacingwalk2.png';
+		this.images.downfacingwalk2.src = 'src/sprites/default/downfacingwalk2.png';
 
 		this.images.leftfacingwalk1 = new Image();
-		this.images.leftfacingwalk1.src = 'src/pngs/leftfacingwalk1.png';
+		this.images.leftfacingwalk1.src = 'src/sprites/default/leftfacingwalk1.png';
 	
 		this.images.leftfacingwalk2 = new Image();
-		this.images.leftfacingwalk2.src = 'src/pngs/leftfacingwalk2.png';
+		this.images.leftfacingwalk2.src = 'src/sprites/default/leftfacingwalk2.png';
 
 		//toggle hud display
 		this.display_hud=false;
