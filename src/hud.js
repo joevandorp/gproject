@@ -204,3 +204,11 @@ window.addEventListener('load', function (){
 	},5,hud.line(22)));
 	
 }); 
+
+window.addEventListener('load', function (){
+	
+	board.hud_elements.push(new hud_text(function(){
+		return 'isWalking = ' + board.assets[board.playertoken].isWalking;
+	},5,hud.line(23)));
+	
+}); 

@@ -55,7 +55,7 @@ window.addEventListener('keyup', (e) => {
 
         if (keys.state[`${keyName}_state`] !== 'keyup') {
             keys.state[`${keyName}_state`] = 'keyup';
-            console.log(`Key up: ${keyName} (${code})`);
+//             console.log(`Key up: ${keyName} (${code})`);
         }
 
         // Example additional logic
@@ -85,7 +85,7 @@ keys.f_keydown = () => {
 };
 
 keys.shift_keydown = keys.e_keydown = () => {
-    console.log("shifty");
+//     console.log("shifty");
     board.cameraToAsset(board.playertoken, 'center');
 };
 
@@ -102,7 +102,7 @@ keys.t_keyup = () => {
 };
 
 keys.space_keydown = () => {
-    console.log("spacey!!!!");
+//     console.log("spacey!!!!");
     board.assets.push(new asset(board.assets[board.assets.length - 1].x, board.assets[board.assets.length - 1].y));
     board.playertoken = (board.playertoken < board.assets.length - 1) ? board.playertoken + 1 : 0;
 };
@@ -114,7 +114,7 @@ keys.r_keydown = () => {
 
 keys.up_keydown = keys.w_keydown = () => {
 	if (board.keyState.up === false) {
-    	console.log("UP");
+//     	console.log("UP");
 		board.keyState.up = true;
 		board.assets[board.playertoken].methods.move();
 	}
@@ -128,10 +128,10 @@ keys.up_keyup = keys.w_keyup = () => {
 
 keys.down_keydown = keys.s_keydown = () => {
 	if (board.keyState.down === false) {
-		console.log("DOWN");
+// 		console.log("DOWN");
 		board.keyState.down = true;
 		board.assets[board.playertoken].methods.move();
-	}
+	} 
 }
 
 keys.down_keyup = keys.s_keyup = () => {
@@ -142,7 +142,7 @@ keys.down_keyup = keys.s_keyup = () => {
 
 keys.left_keydown = keys.a_keydown = () => {
 	if (board.keyState.left === false) {
-		console.log("LEFT");
+// 		console.log("LEFT");
 		board.keyState.left = true;
 		board.assets[board.playertoken].methods.move();
 	}
@@ -156,7 +156,7 @@ keys.left_keyup = keys.a_keyup = () => {
 
 keys.right_keydown = keys.d_keydown = () => {
 	if (board.keyState.right === false) {
-		console.log("RIGHT");
+// 		console.log("RIGHT");
 		board.keyState.right = true;
 		board.assets[board.playertoken].methods.move();
 	}
@@ -170,7 +170,7 @@ keys.right_keyup = keys.d_keyup = () => {
 
 
 keys.slash_keydown = () => {
-    console.log("FIRE GUN");
+//     console.log("FIRE GUN");
     if (typeof board.assets[board.playertoken].methods.fireGun === 'function') {
         board.assets[board.playertoken].methods.fireGun();
     }

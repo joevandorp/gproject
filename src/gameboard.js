@@ -104,6 +104,15 @@
 		this.images.wall = new Image();
 		this.images.wall.src = 'src/sprites/environment/wall/wall.png';
 
+		//load in src/backgrounds/canvas/darkstar.png
+		this.images.background = new Image();
+		this.images.background.src = 'src/backgrounds/canvas/darkstar.png';
+
+		//load sounds/default/wallbump.mp3
+		this.sounds = this.sounds || {};
+		this.sounds.wallbump = new Audio();
+		this.sounds.wallbump.src = 'src/sounds/default/wallbump.mp3';
+
 		//toggle hud display
 		this.display_hud=false;
 
@@ -168,7 +177,7 @@
 			mouse.speedX = Math.min(Math.max(isFinite(mouse.speedX) ? mouse.speedX : 0, -maxSpeed), maxSpeed);
 			mouse.speedY = Math.min(Math.max(isFinite(mouse.speedY) ? mouse.speedY : 0, -maxSpeed), maxSpeed);
 
-			console.log(`Scrolling inertially X=${mouse.speedX} Y=${mouse.speedY}`);
+// 			console.log(`Scrolling inertially X=${mouse.speedX} Y=${mouse.speedY}`);
 
 			let currentSpeedX = mouse.speedX / 5;
 			let currentSpeedY = mouse.speedY / 5;
@@ -178,7 +187,7 @@
 			parent.inertia.interval = setInterval(function() {
 				if (Math.abs(currentSpeedX) < 0.1 && Math.abs(currentSpeedY) < 0.1) {
 					clearInterval(parent.inertia.interval);
-					console.log("Inertial scrolling finished");
+					//console.log("Inertial scrolling finished");
 					return;
 				}
 
@@ -414,7 +423,36 @@
 			
 		  if(this.refresh_toggle){
 				this.context.fillStyle = keys.shift_state=='keydown'?'yellow':this.background;
+				//this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
+				//fill the canvas with the image this.images.background repeating in x and y
+				const bgImage = this.images.background;
+				if (bgImage && bgImage.complete) {
+					const zoomedImageWidth = bgImage.width/10 * this.zoom.value;
+					const zoomedImageHeight = bgImage.height/10 * this.zoom.value;
+					
+					const startX = ((this.offsetX % zoomedImageWidth) + zoomedImageWidth) % zoomedImageWidth;
+					const startY = ((this.offsetY % zoomedImageHeight) + zoomedImageHeight) % zoomedImageHeight;
+					
+					for (let x = -zoomedImageWidth + startX; x < this.canvas.width; x += zoomedImageWidth) {
+						for (let y = -zoomedImageHeight + startY; y < this.canvas.height; y += zoomedImageHeight) {
+							this.context.drawImage(
+								bgImage,
+								x,
+								y,
+								zoomedImageWidth,
+								zoomedImageHeight
+							);
+						}
+					}
+				} else {
+					this.context.fillStyle = this.background;
+					this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+				}
+
+				//draw a semi transparent black rect over the whole canvas to mute the background
+				this.context.fillStyle = 'rgba(0,0,0,0.8)';
 				this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
+				
 				//this.refreshBackground();
 					for(var l in this.layerpriority){
 						for(var i in this.assets){

@@ -42,6 +42,7 @@
 		this.facing=facing||'down';
 		this.camerafollow=true;
 		this.moving=false;
+		this.walkAnimationOn = false;
 		this.health = 5;
 
 
@@ -49,12 +50,13 @@
 
 
 		//check health every 1 second and remove asset if health is 0
-		this.healthInterval = setInterval(() => {
+		this.assetInterval = setInterval(() => {
 			if (this.health <= 0) {
-				clearInterval(this.healthInterval);
+				clearInterval(this.assetInterval);
 				this.remove();
 			}
-		});
+			this.setWalkAnimation();
+		}, 200);
 		
 			
 		this.animate=function(){
@@ -73,19 +75,20 @@
 		}
 		
 		this.outofbounds=function(){
-			console.log("wall hit");
+			// console.log("wall hit");
 		};
 		this.onCollide={};
 		this.onOver={};
 		this.onCollide.consolelog=function(collidelog){
-			console.log("collision! BANGer!");
-			console.log(collidelog);
+			 console.log("collision! BANGer!");
+			 console.log(collidelog);
 		};
 		this.onOver.consolelog=function(collidelog){
-			console.log("over! noBANGer!");
-			console.log(collidelog);
+			// console.log("over! noBANGer!");
+			// console.log(collidelog);
 		};
-  		
+
+
 
 
   		
@@ -106,13 +109,13 @@
 			firstMovementInDirection = parent.oldFacing !== parent.facing;
 			parent.oldFacing = parent.facing;
 			if(firstMovementInDirection){
-				console.log("first movement in direction");
+				// console.log("first movement in direction");
 				parent.fill = `image:${parent.facing}facing`;
 				parent.x = Math.round(parent.x);
 				
 				setTimeout(nextMove, 200);
 			}else if (parent.moving === false && !parent.methods.checkCollision(x, 0)) {
-				console.log("derp derp");
+				// console.log("derp derp");
 				// if we are moving, set moving to true
 				parent.moving = true;
 				originalX = parent.x;
@@ -138,6 +141,7 @@
 					}
 					parent.methods.centerCamera();
 				}, 2);
+				
 			}
 		};
 
@@ -159,13 +163,13 @@
 			parent.oldFacing = parent.facing;
 			
 			if(firstMovementInDirection){
-				console.log("first movement in direction");
+				// console.log("first movement in direction");
 				
 				parent.y = Math.round(parent.y);
 				parent.fill = `image:${parent.facing}facing`;
 				setTimeout(nextMove, 200);
 			}else if (parent.moving === false && !parent.methods.checkCollision(0, y)) {
-				console.log("derp derp");
+				// console.log("derp derp");
 				// if we are moving, set moving to true
 				parent.moving = true;
 				originalY = parent.y;
@@ -189,16 +193,29 @@
 					}
 					parent.methods.centerCamera();
 				}, 2);
+				
 			}
 		};
 
 		this.methods.move = function(){
-			board.keyState.up ? parent.methods.moveY(-1) : null;
-			board.keyState.down ? parent.methods.moveY(1) : null;
-			board.keyState.left ? parent.methods.moveX(-1) : null;
-			board.keyState.right ? parent.methods.moveX(1) : null;
+			if (board.keyState.up || board.keyState.down || board.keyState.left || board.keyState.right) {
+				
+				
+				if (board.keyState.up) parent.methods.moveY(-1);
+				if (board.keyState.down) parent.methods.moveY(1);
+				if (board.keyState.left) parent.methods.moveX(-1);
+				if (board.keyState.right) parent.methods.moveX(1);
+			} 
 			
 		};
+
+		this.setWalkAnimation = function(){
+			if (board.keyState.up || board.keyState.down || board.keyState.left || board.keyState.right) {
+				this.walkAnimationOn = true;
+			} else {
+				this.walkAnimationOn = false;
+			}
+		}
 
   		this.methods.centerCamera = function(position,offsetX,offsetY){
 				position=position||'center';
@@ -256,7 +273,7 @@
 				return false;
   		};
   		this.methods.checkCollision = function(x,y,absolute,callback){
-			console.log("check collision x="+x+" y="+y);
+			// console.log("check collision x="+x+" y="+y);
   			x=x||0;
   			y=y||0;
   		
@@ -278,19 +295,19 @@
   			var gameheight = board.canvas.height+board.offsetY;
   			
   			if(pixelX>(board.canvas.width+board.offsetX*-1)-(board.canvas.width/15)){
-  				console.log("1st pixelX="+pixelX+" > canvwidth="+board.canvas.width+" ofX="+board.offsetX+" ofY="+board.offsetY);
+  				// console.log("1st pixelX="+pixelX+" > canvwidth="+board.canvas.width+" ofX="+board.offsetX+" ofY="+board.offsetY);
   				board.offsetX-=squarewidth;
   			}
   			else if(pixelY>(board.canvas.height+board.offsetY*-1)-(board.canvas.width/15)){
-  				console.log("2nd pixelY="+pixelY+" > canvheight="+board.canvas.height+" ofX="+board.offsetX+" ofY="+board.offsetY);
+  				// console.log("2nd pixelY="+pixelY+" > canvheight="+board.canvas.height+" ofX="+board.offsetX+" ofY="+board.offsetY);
   				board.offsetY-=squareheight;
   			}
   			else if(pixelY<(board.offsetY*-1)+(board.canvas.width/15)){
-  				console.log("3rd pixelY="+pixelY+" < board.offsetY="+board.offsetY+" ofX="+board.offsetX+" ofY="+board.offsetY);
+  				// console.log("3rd pixelY="+pixelY+" < board.offsetY="+board.offsetY+" ofX="+board.offsetX+" ofY="+board.offsetY);
   				board.offsetY+=squareheight;
   			}
   			else if(pixelX<(board.offsetX*-1)+(board.canvas.width/15)){
-  				console.log("4th pixelX="+pixelX+" < board.offsetX="+board.offsetX+" ofX="+board.offsetX+" ofY="+board.offsetY);
+  				// console.log("4th pixelX="+pixelX+" < board.offsetX="+board.offsetX+" ofX="+board.offsetX+" ofY="+board.offsetY);
   				board.offsetX+=squarewidth;
   			}
   			
@@ -316,7 +333,7 @@
   				for(var i in parent.onCollide){
   					parent.onCollide[i](collidelog);
   				}
-				console.log("collide");
+				// console.log("collide");
   				return true;
   			}else{
   				if(ontop>0){
@@ -324,7 +341,7 @@
   						parent.onOver[i](collidelog);
   					}
   				}
-				console.log("no collide");
+				// console.log("no collide");
   				return false;
   				
   			}
@@ -340,20 +357,34 @@
   		this.fill='yellow';
   		this.type='player';
   		this.solid=true;
+
   		this.methods.fireGun = ()=>{
   			board.assets.push(new bullet({direction:this.facing,x:this.x,y:this.y}));
   		}
-		this.fill='image:downfacing';
-
+		this.fill='image:downfacing';	
+		
+		let walkCycleInterval = 0;
+		
 		this.walkCycle = setInterval(() => {
-			if(this.moving && this.fill != `image:${this.facing}facingwalk1`) {
+			if(this.walkAnimationOn && this.fill != `image:${this.facing}facingwalk1`) {
 				this.fill = `image:${this.facing}facingwalk1`;
-			}else if (this.moving) {
+			}else if (this.walkAnimationOn) {
 				this.fill = `image:${this.facing}facingwalk2`;
 			}else{
 				this.fill = `image:${this.facing}facing`;
 			}
+			//every 3 iterations, move the player (does another checkCollision)
+			walkCycleInterval++;
+			if(walkCycleInterval % 3 === 0){
+				this.methods.move();
+			}
 		}, 200);
+
+		//oncollide.playSound wallbump
+		this.onCollide.playSound = function(){
+			board.sounds.wallbump.play();
+		}
+				  
   		
   	} 
   	
@@ -367,7 +398,7 @@
 		this.usegrid = false;
 		this.shape = 'circle';
 		this.distance = distance;
-		this.direction = direction;
+		this.direction = direction; 
 		
 		
 		
@@ -394,7 +425,7 @@
 				if(this.methods.checkCollision(Math.floor(this.x), Math.floor(this.y),true, (collidedAsset => {
 					collidedAsset.health -= 1;
 				}))){
-					console.log(this.x, this.y, "hit something");
+					// console.log(this.x, this.y, "hit something");
 					clearInterval(this.interval);
 					this.remove();  // Ensure `remove` method is defined elsewhere in your code
 				}
